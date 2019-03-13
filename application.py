@@ -36,11 +36,32 @@ def successreg():
     login = request.form.get("login")
     password = request.form.get("password")
     email = request.form.get("email")
-    # if db.execute("SELECT login FROM users WHERE login=:login", {"login": login}).rowcount > 0:
-    #     return render_template(register.html, loginMessage="User with that login already exist")
-    # if db.execute("SELECT email FROM users WHERE email=:email", {"email": email}).rowcount > 0:
-    #     return render_template(register.html, emailMessage="User with that login already exist")
     db.execute("INSERT INTO users(login, password, email) VALUES (:login, :password, :email)",
         {"login": login, "password": password, "email": email})
     db.commit()
     return render_template("successreg.html")
+
+
+@app.route("/login")
+def login():
+    return render_template("login.html", wrong=False)
+
+
+@app.route("/checklogin", methods=["POST"])
+def checklogin():
+    login = request.form.get("login")
+    password = request.form.get("password")
+    message = "You logged in."
+    if db.execute("SELECT * FROM users WHERE login = :login AND password = :password",
+                  {"login": login, "password": password}).rowcount != 0:
+        return render_template("successLayout.html", message=message)
+    else:
+        isWrong = True
+        return render_template("login.html", wrong=isWrong)
+
+
+
+
+
+
+
