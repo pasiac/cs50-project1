@@ -29,7 +29,10 @@
         {{ message }}
         <ul>
         {% for book in books %}
-            <li>{{ book }}</li>
+            <li><h4><a href="{{ url_for('books', isbn=book['isbn']) }}">{{ book['title'] }}</a></h4></li>
+            <li>ISBN: {{ book['isbn'] }}</li>
+            <li>Author: {{ book['author'] }}</li>
+            <li>Year: {{ book['year'] }}</li></br>
         {% endfor %}
         </ul>
     </div>

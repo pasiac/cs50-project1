@@ -70,3 +70,6 @@ form.example::after {
 search-bar{
     float: center;
 }
+li{
+    list-style-type: none;
+}

@@ -24,43 +24,21 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
-# class Book:
-#     def __init__(self, isbn, title, author, year):
-#         self.isbn = isbn
-#         self.title = title
-#         self.author = author
-#         self.year = year
-#
-#     def print_book(self):
-#         print(f"isbn: {self.isbn}")
-#         print(f"title: {self.title}")
-#         print(f"author: {self.author}")
-#         print(f"year: {self.year}")
-
-
+# TODO add regular expression probably needs from sqlalchemy.sql import text
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == 'GET':
         return render_template("index.html")
     else:
         item = request.form.get("item")
-        books = (db.execute("SELECT * FROM books WHERE isbn = :item OR author = :item OR title = :item",
-                            {"item": item})).fetchone()
+        books = (db.execute("SELECT * FROM books WHERE "
+                            "isbn LIKE :item OR author LIKE :item OR title LIKE :item",
+                            {"item": item})).fetchall()
         if books is not None:
             return render_template("index.html", books=books)
         else:
-            item = "No such book in the list"
-            return render_template("index.html", message="haha")
-
-
-# @app.route("/search")
-# def search(searchtext):
-#     books = (db.execute("SELECT * FROM books WHERE isbn = :text OR author = :text OR title = :text",
-#                         {"text": searchtext})).fetchall
-#     if books is not None:
-#         return render_template("index.html", books=books)
-#     else:
-#         return render_template("index.html")
+            message = "No such book in the list"
+            return render_template("index.html", message=message)
 
 
 # TODO: something with session to get user real log in system
@@ -79,7 +57,7 @@ def register():
             db.commit()
             return render_template("login.html", newaccount=True)
         else:
-            #TODO did not work fix
+            # TODO did not work fix
             return render_template("register.html", isExist=True)
 
 
@@ -97,3 +75,12 @@ def login():
         else:
             isWrong = True
             return render_template("login.html", wrong=isWrong)
+
+
+@app.route("/books/<isbn>")
+def books(isbn):
+    book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
+    if book is None:
+        return render_template("errorLayout.html")
+    return render_template("books.html", book=book)
+
