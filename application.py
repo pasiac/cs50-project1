@@ -45,12 +45,12 @@ def index():
     else:
         item = request.form.get("item")
         books = (db.execute("SELECT * FROM books WHERE isbn = :item OR author = :item OR title = :item",
-                            {"item": item}))
+                            {"item": item})).fetchone()
         if books is not None:
             return render_template("index.html", books=books)
         else:
             item = "No such book in the list"
-            return render_template("index.html", message=item)
+            return render_template("index.html", message="haha")
 
 
 # @app.route("/search")
