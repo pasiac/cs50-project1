@@ -2,7 +2,12 @@
 {% block title %}Log in{% endblock %}
 {% block content %}
 <div class="form-group row px-sm-4" >
-    <form action="{{ url_for('checklogin') }}" method="post">
+    <form action="{{ url_for('login') }}" method="post">
+        {% if newaccount %}
+            <div class="alert alert-success" role="alert">
+                Account successfully created, you can log in
+            </div>
+        {% endif %}
         <h3>Please log in</h3>
         {% if wrong %}
         <div class="alert alert-danger" role="alert">
@@ -16,6 +21,7 @@
             <input type="password" class="form-control" name="password" placeholder="Password">
         </div>
         <button type="submit" class="btn btn-primary">Log in</button>
+        <div>If you don't have account <a href="/register">click here </a>to register</div>
     </form>
 </div>
 {% endblock %}

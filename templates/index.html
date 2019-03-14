@@ -3,21 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Homepage</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
 </head>
 <body>
-
-        <ul class="topnav">
-                <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="/">Books</a></li>
-                <li><a href="/">About</a></li>
-                <li class="right"><a href="{{ url_for('login') }}">Log in </a></li>
-            </ul>
-
-        <section class="section1"></section>
-        <section class="content"></section>
-
-
+    <ul class="topnav">
+        <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="/">Books</a></li>
+        <li><a href="/">About</a></li>
+        <li class="right"><a href="{{ url_for('login') }}">Log in </a></li>
+    </ul>
+    <div class="search-bar">
+        <form class="example" action="{{ url_for('index') }}" method="get">
+            <input type="text" placeholder="Search.." name="search">
+            <button type="button" class="btn btn-primary">search</button>
+        </form>
+    </div>
+    <div>
+        <ul>
+        {% for book in books %}
+            <li>Title: {{ book.title }} author: {{ book.author }} year {{ book.year }}</li>
+        {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>
