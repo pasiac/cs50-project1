@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "layout.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<div class="form-group row px-sm-4" >
+    <form action="{{ url_for('checklogin') }}" method="post">
+        <h3>Please log in</h3>
+        {% if wrong %}
+        <div class="alert alert-danger" role="alert">
+           Wrong log in or password
+        </div>
+        {% endif %}
+        <div class="col-xs-4">
+            <input type="text" class="form-control" name="login" placeholder="Login">
+        </div>
+        <div class="col-xs-4">
+            <input type="password" class="form-control" name="password" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-primary">Log in</button>
+    </form>
+</div>
+{% endblock %}
