@@ -1,9 +1,10 @@
-import os
+import os, re
 
 from flask import Flask, session, render_template, request
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+
 
 app = Flask(__name__)
 app.config['TESTING'] = True
@@ -24,7 +25,6 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
-# TODO add regular expression probably needs from sqlalchemy.sql import text
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == 'GET':
@@ -33,7 +33,7 @@ def index():
         item = request.form.get("item")
         books = (db.execute("SELECT * FROM books WHERE "
                             "isbn LIKE :item OR author LIKE :item OR title LIKE :item",
-                            {"item": item})).fetchall()
+                            {"item": (item+'%').capitalize()})).fetchall()
         if books is not None:
             return render_template("index.html", books=books)
         else:
