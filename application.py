@@ -8,9 +8,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = Flask(__name__)
 app.config['TESTING'] = True
-app.debug = True
-app.secret_key = b'\xae\x93Y\xebI1\x7f\x88J#\xf2wM~|\xb62\x14\x08\x0e\xfd~<\r'
-
+app.config.from_pyfile('config.cfg', silent=True)
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -51,15 +49,28 @@ def register():
         login = request.form.get("login")
         password = request.form.get("password")
         email = request.form.get("email")
-        if db.execute("SELECT * FROM users WHERE login = :login AND email = :email",
+        if db.execute("SELECT * FROM users WHERE login = :login OR email = :email",
                       {"login": login, "email": email}).rowcount == 0:
             db.execute("INSERT INTO users(login, password, email) VALUES (:login, :password, :email)",
                        {"login": login, "password": password, "email": email})
             db.commit()
             return render_template("login.html", newaccount=True)
         else:
-            # TODO did not work fix
             return render_template("register.html", isExist=True)
+
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'user' in session:
+        g.user = session['user']
+
+
+@app.route("/logout")
+def logout():
+    session.pop('user', None)
+    g.user = None
+    return render_template("index.html")
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -89,15 +100,4 @@ def books(isbn):
     return render_template("books.html", book=book)
 
 
-@app.before_request
-def before_request():
-    g.user = None
-    if 'user' in session:
-        g.user = session['user']
 
-
-@app.route("/logout")
-def logout():
-    session.pop('user', None)
-    g.user = None
-    return render_template("index.html")
