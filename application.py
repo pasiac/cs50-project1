@@ -9,7 +9,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 app = Flask(__name__)
 app.config['TESTING'] = True
 app.debug = True
-app.secret_key = b'\xae\x93Y\xebI1\x7f\x88J#\xf2wM~|\xb62\x14\x08\x0e\xfd~<\r'
+
 
 
 # Check for environment variable
