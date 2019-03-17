@@ -16,7 +16,11 @@
         <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
         <li><a href="/">Books</a></li>
         <li><a href="/">About</a></li>
-        <li class="right"><a href="{{ url_for('login') }}">Log in </a></li>
+        {% if g.user == None %}
+            <li class="right-button"><a href="{{ url_for('login') }}">Log in </a></li>
+        {% else %}
+            <li class="right-button"><a href="{{ url_for('logout') }}">Log out </a></li>
+        {% endif %}
     </ul>
 
     <div class="search-bar">

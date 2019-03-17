@@ -1,6 +1,6 @@
 import os, re
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, g, redirect, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -9,6 +9,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 app = Flask(__name__)
 app.config['TESTING'] = True
 app.debug = True
+app.secret_key = b'\xae\x93Y\xebI1\x7f\x88J#\xf2wM~|\xb62\x14\x08\x0e\xfd~<\r'
 
 
 # Check for environment variable
@@ -63,18 +64,21 @@ def register():
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    if request.method == 'GET':
-        return render_template("login.html")
-    else:
+    if request.method == 'POST':
+        session.pop('user', None)
         login = request.form.get("login")
         password = request.form.get("password")
-        message = "You logged in."
         if db.execute("SELECT * FROM users WHERE login = :login AND password = :password",
                       {"login": login, "password": password}).rowcount != 0:
-            return render_template("successLayout.html", message=message)
+            session['user'] = login
+            session['logged_in'] = True
+            g.user = session['user']
+            return render_template("index.html")
         else:
-            isWrong = True
-            return render_template("login.html", wrong=isWrong)
+            is_wrong = True
+            return render_template("login.html", wrong=is_wrong)
+    # GET request
+    return render_template("login.html")
 
 
 @app.route("/books/<isbn>")
@@ -84,3 +88,16 @@ def books(isbn):
         return render_template("errorLayout.html")
     return render_template("books.html", book=book)
 
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'user' in session:
+        g.user = session['user']
+
+
+@app.route("/logout")
+def logout():
+    session.pop('user', None)
+    g.user = None
+    return render_template("index.html")
