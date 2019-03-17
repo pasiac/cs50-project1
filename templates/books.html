@@ -5,12 +5,16 @@
     <title>{{ book['title'] }}</title>
 </head>
 <body>
-    <ul>
+    <ul class="general-information">
         <li>ISBN: {{ book['isbn'] }}</li>
         <li>Title: {{ book['title'] }}</li>
         <li>Author: {{ book['author'] }}</li>
         <li>Year: {{ book['year'] }}</li>
-    </ul>
 
+    </ul>
+    <ul class="goodread-api">
+        <li>Rating: {{ data["books"][0]['average_rating'] }}</li>
+        <li>{{ data["books"][0]['ratings_count'] }} users voted</li>
+    </ul>
 </body>
 </html>

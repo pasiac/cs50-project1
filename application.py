@@ -4,11 +4,13 @@ from flask import Flask, session, render_template, request, g, redirect, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+import requests, json
 
 
 app = Flask(__name__)
 app.config['TESTING'] = True
-app.config.from_pyfile('config.cfg', silent=True)
+app.debug = True
+
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -29,15 +31,16 @@ def index():
     if request.method == 'GET':
         return render_template("index.html")
     else:
-        item = request.form.get("item")
-        books = (db.execute("SELECT * FROM books WHERE "
-                            "isbn LIKE :item OR author LIKE :item OR title LIKE :item",
-                            {"item": (item+'%').capitalize()})).fetchall()
-        if books is not None:
-            return render_template("index.html", books=books)
-        else:
-            message = "No such book in the list"
-            return render_template("index.html", message=message)
+
+            item = request.form.get("item")
+            books = (db.execute("SELECT * FROM books WHERE "
+                                "isbn LIKE :item OR author LIKE :item OR title LIKE :item",
+                                {"item": (item+'%').capitalize()})).fetchall()
+            if books is not None:
+                return render_template("index.html", books=books)
+            else:
+                message = "No such book in the list"
+                return render_template("index.html", message=message)
 
 
 # TODO: something with session to get user real log in system
@@ -97,7 +100,8 @@ def books(isbn):
     book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
     if book is None:
         return render_template("errorLayout.html")
-    return render_template("books.html", book=book)
+    data = requests.get(f"https://www.goodreads.com/book/review_counts.json?isbns={isbn}&key=XCZxj5AZYl3kaMUi80UeA").json()
+    return render_template("books.html", book=book, data=data)
 
 
 
