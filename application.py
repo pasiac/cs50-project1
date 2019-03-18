@@ -90,24 +90,26 @@ def login():
     return render_template("login.html")
 
 
-@app.route("/books/<isbn>")
+@app.route("/books/<isbn>", methods=["POST", "GET"])
 def books(isbn):
+    if request.method == "POST":
+        user_review = request.form.get("user-review")
+        db.execute("INSERT INTO reviews(isbn, user_login, review_text) VALUES (:isbn, :login, :review_text)",
+                   {"isbn": isbn, "login": g.user, "review_text": user_review})
+        db.commit()
+        return redirect(url_for("books", isbn=isbn))
     if request.method == "GET":
         book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
         if book is None:
             return render_template("errorLayout.html")
         data = requests.get(f"https://www.goodreads.com/book/review_counts."
                             f"json?isbns={isbn}&key=XCZxj5AZYl3kaMUi80UeA").json()
-        reviews = db.execute("SELECT login, review_text FROM users JOIN reviews ON reviews.user_id = users.id"
-                             " WHERE isbn = :isbn", {"isbn": isbn}).fetchall()
         can_write = True
-        if reviews is None:
-            return render_template("books.html", book=book, data=data, can_write=can_write, isbn=isbn)
-        else:
-            for review in reviews:
-                if review['login'] == g.user:
-                    can_write = False
-    return render_template("books.html", book=book, data=data, can_write=can_write, isbn=isbn, reviews=reviews)
-
+        reviews = db.execute("SELECT user_login, review_text FROM reviews "
+                             " WHERE isbn = :isbn", {"isbn": isbn}).fetchall()
+        for review in reviews:
+            if review['user_login'] == g.user:
+                can_write = False
+        return render_template("books.html", book=book, data=data, can_write=can_write, isbn=isbn, reviews=reviews)
 
 
