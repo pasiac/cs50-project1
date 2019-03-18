@@ -5,20 +5,20 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 {% endblock %}
 {% block content %}
-<div class="search-bar">
-    <form autocomplete="on" action="{{ url_for('index') }}" method="post">
-        <input type="text" class="form-control" name="item" placeholder="What're we looking for ?">
-        <button type="submit" class="button">Search</button>
-    </form>
-</div>
-<div>
-    <ul>
-    {% for book in books %}
-        <li><h4><a href="{{ url_for('books', isbn=book['isbn']) }}">{{ book['title'] }}</a></h4></li>
-        <li>ISBN: {{ book['isbn'] }}</li>
-        <li>Author: {{ book['author'] }}</li>
-        <li>Year: {{ book['year'] }}</li></br>
-    {% endfor %}
-    </ul>
-</div>
+    <div class="search-bar">
+        <form autocomplete="on" action="{{ url_for('index') }}" method="post">
+            <input type="text" class="form-control" name="item" placeholder="What're we looking for ?">
+            <button type="submit" class="button">Search</button>
+        </form>
+    </div>
+    <div>
+        <ul>
+        {% for book in books %}
+            <li><h4><a href="{{ url_for('books', isbn=book['isbn']) }}">{{ book['title'] }}</a></h4></li>
+            <li>ISBN: {{ book['isbn'] }}</li>
+            <li>Author: {{ book['author'] }}</li>
+            <li>Year: {{ book['year'] }}</li></br>
+        {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

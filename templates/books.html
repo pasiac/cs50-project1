@@ -22,4 +22,12 @@
             <li>Review:</br> {{ review['review_text'] }}</li></br>
         {% endfor %}
     </ul>
+    <div class="post-review">
+    {% if can_write %}
+        <form action="{{ url_for('index')}}" method="post">
+            <input type="text" name="user-review" placeholder="Write your opinion"><br>
+            <input type="submit" value="Submit" >
+        </form>
+    {% endif %}
+    </div>
 {% endblock %}
