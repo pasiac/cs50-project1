@@ -1,10 +1,14 @@
 {% extends "layout.html" %}
 {% block title %}Main page{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='index_style.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+{% endblock %}
 {% block content %}
 <div class="search-bar">
-    <form class="example" action="{{ url_for('index') }}" method="post">
-        <input type="text" class="form-control" name="item" placeholder="Search..">
-        <button type="submit" class="btn btn-primary">Search</button>
+    <form autocomplete="on" action="{{ url_for('index') }}" method="post">
+        <input type="text" class="form-control" name="item" placeholder="What're we looking for ?">
+        <button type="submit" class="button">Search</button>
     </form>
 </div>
 <div>

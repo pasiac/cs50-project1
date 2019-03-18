@@ -1,0 +1,8 @@
+.search-bar {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 50%;
+  text-align: center;
+  font-size: 18px;
+}

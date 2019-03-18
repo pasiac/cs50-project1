@@ -96,7 +96,13 @@ def books(isbn):
     if book is None:
         return render_template("errorLayout.html")
     data = requests.get(f"https://www.goodreads.com/book/review_counts.json?isbns={isbn}&key=XCZxj5AZYl3kaMUi80UeA").json()
-    return render_template("books.html", book=book, data=data)
+    #  SELECT login, isbn FROM users JOIN reviews ON reviews.user_id = users.id;
+    reviews = db.execute("SELECT login, review_text FROM users JOIN reviews ON reviews.user_id = users.id"
+                         " WHERE isbn = :isbn", {"isbn": isbn}).fetchall()
+    if reviews is None:
+        return render_template("books.html", book=book, data=data)
+
+    return render_template("books.html", book=book, data=data, reviews=reviews)
 
 
 
