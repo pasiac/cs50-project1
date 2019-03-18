@@ -113,3 +113,24 @@ def books(isbn):
         return render_template("books.html", book=book, data=data, can_write=can_write, isbn=isbn, reviews=reviews)
 
 
+@app.route("/api/<isbn>", methods=["GET"])
+def api(isbn):
+    if request.method == "GET":
+        book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
+        data = requests.get(f"https://www.goodreads.com/book/review_counts."
+                            f"json?isbns={isbn}&key=XCZxj5AZYl3kaMUi80UeA").json()
+
+        response = json.dumps({
+            "title":  book['title'],
+            "author": book['author'],
+            "year":   book['year'],
+            "isbn":   book['isbn'],
+            "average_rating": data["books"][0]['average_rating'],
+            "ratings_count": data["books"][0]['ratings_count']
+        })
+
+        return response
+
+
+
+
