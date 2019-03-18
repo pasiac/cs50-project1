@@ -31,16 +31,11 @@ def index():
     if request.method == 'GET':
         return render_template("index.html")
     else:
-
-            item = request.form.get("item")
-            books = (db.execute("SELECT * FROM books WHERE "
-                                "isbn LIKE :item OR author LIKE :item OR title LIKE :item",
-                                {"item": (item+'%').capitalize()})).fetchall()
-            if books is not None:
-                return render_template("index.html", books=books)
-            else:
-                message = "No such book in the list"
-                return render_template("index.html", message=message)
+        item = request.form.get("item")
+        books = (db.execute("SELECT * FROM books WHERE "
+                            "isbn LIKE :item OR author LIKE :item OR title LIKE :item",
+                            {"item": (item+'%').capitalize()})).fetchall()
+        return render_template("index.html", books=books)
 
 
 # TODO: something with session to get user real log in system

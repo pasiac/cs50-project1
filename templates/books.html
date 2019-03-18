@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ book['title'] }}</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block title %}{{ book['title'] }}{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='books_style.css') }}">
+{% endblock %}
+{% block content %}
     <ul class="general-information">
         <li>ISBN: {{ book['isbn'] }}</li>
         <li>Title: {{ book['title'] }}</li>
@@ -16,5 +15,4 @@
         <li>Rating: {{ data["books"][0]['average_rating'] }}</li>
         <li>{{ data["books"][0]['ratings_count'] }} users voted</li>
     </ul>
-</body>
-</html>
+{% endblock %}

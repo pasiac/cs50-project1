@@ -1,44 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Homepage</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-</head>
-<body>
-    <ul class="topnav">
-        <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
-        <li><a href="/">Books</a></li>
-        <li><a href="/">About</a></li>
-        {% if g.user == None %}
-            <li class="right-button"><a href="{{ url_for('login') }}">Log in </a></li>
-        {% else %}
-            <li class="right-button"><a href="{{ url_for('logout') }}">Log out </a></li>
-        {% endif %}
+{% extends "layout.html" %}
+{% block title %}Main page{% endblock %}
+{% block content %}
+<div class="search-bar">
+    <form class="example" action="{{ url_for('index') }}" method="post">
+        <input type="text" class="form-control" name="item" placeholder="Search..">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+<div>
+    <ul>
+    {% for book in books %}
+        <li><h4><a href="{{ url_for('books', isbn=book['isbn']) }}">{{ book['title'] }}</a></h4></li>
+        <li>ISBN: {{ book['isbn'] }}</li>
+        <li>Author: {{ book['author'] }}</li>
+        <li>Year: {{ book['year'] }}</li></br>
+    {% endfor %}
     </ul>
-
-    <div class="search-bar">
-        <form class="example" action="{{ url_for('index') }}" method="post">
-            <input type="text" class="form-control" name="item" placeholder="Search..">
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-    </div>
-    <div>
-        {{ message }}
-        <ul>
-        {% for book in books %}
-            <li><h4><a href="{{ url_for('books', isbn=book['isbn']) }}">{{ book['title'] }}</a></h4></li>
-            <li>ISBN: {{ book['isbn'] }}</li>
-            <li>Author: {{ book['author'] }}</li>
-            <li>Year: {{ book['year'] }}</li></br>
-        {% endfor %}
-        </ul>
-    </div>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-ul.topnav {
+.topnav {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -6,9 +6,12 @@ ul.topnav {
   background-color: #333;
 }
 
-ul.topnav li {float: left;}
+.topnav li.left-button {
+  float: left;
+  margin-right: 15px;
+}
 
-ul.topnav li a {
+.topnav li a {
   display: block;
   color: white;
   text-align: center;
@@ -20,7 +23,7 @@ ul.topnav li a:hover:not(.active) {background-color: #111;}
 
 ul.topnav li a.active {background-color: #4CAF50;}
 
-right-button {
+ul.topnav li.right-button {
     float: right;
 }
 
@@ -34,44 +37,6 @@ body {
   font-family: Arial;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-form.example input[type=text] {
-  padding: 10px;
-  font-size: 17px;
-  border: 1px solid grey;
-  float: left;
-  width: 80%;
-  background: #f1f1f1;
-}
-
-form.example button {
-  float: left;
-  width: 20%;
-  padding: 10px;
-  background: #2196F3;
-  color: white;
-  font-size: 17px;
-  border: 1px solid grey;
-  border-left: none;
-  cursor: pointer;
-}
-
-form.example button:hover {
-  background: #0b7dda;
-}
-
-form.example::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-search-bar{
-    float: center;
-}
 li{
     list-style-type: none;
 }
