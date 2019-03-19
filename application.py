@@ -1,6 +1,6 @@
-import os, re
+import os
 
-from flask import Flask, session, render_template, request, g, redirect, url_for
+from flask import Flask, session, render_template, request, g, redirect, url_for, abort
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -26,6 +26,7 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
+# TODO: Make all html/css things to make website more user friendly
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == 'GET':
@@ -38,7 +39,7 @@ def index():
         return render_template("index.html", books=books)
 
 
-# TODO: something with session to get user real log in system
+# TODO: Sometimes register don't work
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == 'GET':
@@ -92,6 +93,7 @@ def login():
 
 @app.route("/books/<isbn>", methods=["POST", "GET"])
 def books(isbn):
+    # TODO: Add 1-5 point scale to review(done in html and css)
     if request.method == "POST":
         user_review = request.form.get("user-review")
         db.execute("INSERT INTO reviews(isbn, user_login, review_text) VALUES (:isbn, :login, :review_text)",
@@ -117,20 +119,18 @@ def books(isbn):
 def api(isbn):
     if request.method == "GET":
         book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
+        if book is None:
+            abort(404)
         data = requests.get(f"https://www.goodreads.com/book/review_counts."
                             f"json?isbns={isbn}&key=XCZxj5AZYl3kaMUi80UeA").json()
-
-        response = json.dumps({
+        book_data = {
             "title":  book['title'],
             "author": book['author'],
             "year":   book['year'],
             "isbn":   book['isbn'],
             "average_rating": data["books"][0]['average_rating'],
             "ratings_count": data["books"][0]['ratings_count']
-        })
-
+        }
+        response = json.dumps(book_data, indent=4)
         return response
-
-
-
 
